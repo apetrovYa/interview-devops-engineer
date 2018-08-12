@@ -1,0 +1,8 @@
+{
+    "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+    "itemDisplayName": "Create a Deployment using templates and parameters files",
+    "description": "This template creates a Storage Account with Storage Service Encryption and a Vitual Network with 3 subnets.",
+    "summary": "Create a Storage Account and a Vitual Network.",
+    "githubUsername": "apetrovya",
+    "dateUpdated": "2018-08-17"
+}

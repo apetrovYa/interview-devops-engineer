@@ -1,0 +1,34 @@
+
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "SAPrefixName": {
+        "value": "sentia"
+      },
+      "SAType": {
+        "value": "Standard_LRS"
+      },
+      "SAEnableEncryption":{
+        "value": true 
+      },
+      "VNName":{
+        "value": "sentia"
+      },
+      "NetPrefix": {
+        "value": "172.16"
+      },
+      "NPostfix":{
+        "value": "0.0"
+      },
+      "NBlock":{
+        "value": "12"
+      },
+      "SBlock": {
+        "value": "24"
+      },
+      "SCount":{
+        "value": 3
+      }
+    }
+  }
