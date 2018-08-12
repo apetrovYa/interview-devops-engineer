@@ -1,0 +1,33 @@
+#
+# Author: Andrei Petrov
+#
+# Why to use this file: 
+#   The main reason to use this file is the management of
+#   all global information required to configure the deployment
+#   script. This file is a Linux Shell file. It configures the environment
+#   of the development machine. OF COURSE IT IS NOT PRODUCTION READY.
+#
+# How to use it: 
+#   In order to use this file, you have to populate the variabels below with
+#   yours valuable data. Have a look at the comments on the line below 
+#   to understand the use of each information line.
+
+# Type here the Azure Resource Group (ARG) to create during the deployment
+export ARG="interview"
+
+# Type here the Azure Subscribtion ID (ASID) to use during the deployment
+export ASID="f160b75d-40d9-41d5-b1a2-1f6f2554361a"
+
+# Type here the Azure Cloud Region (ACR) to use during the deployment
+export ACR="westeurope"
+
+# Type here the Policy Rules URI to use during the deployment
+# The URI has to have the following example format:
+# https://raw.githubusercontent.com/${REPOSITORY_USERNAME_OWNER}/${REPOSITORY_NAME}/${BRANCH_NAME]/${THE_PATH_NAME_TO THE_POLICY_FILE}/${THE_POLICY_RULE_FILE_NAME}.json
+export PRU="https://raw.githubusercontent.com/apetrovYa/interview-devops-engineer/master/assessment-1/policies/AllowOnlySpecificResourceTypes.rules.json"
+
+export FirstKeyApp="UIPhs5jLb+5oj8i7xPbMKjo/5IU9a+mVzZubu8uElVQ="
+
+export ClientId="f450933b-7ae4-46e0-a9ff-c80586bc6f50"
+
+export TenantId="dbcf5543-63e3-46f0-99c1-ff8b22e4521a"

@@ -1,0 +1,142 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "SAPrefixName": {
+            "type": "string",
+            "metadata": {
+                "description": "The base name for the Storage Account resource."
+            }
+        },
+        "SAType": {
+            "type": "string",
+            "allowedValues": [
+              "Standard_LRS",
+              "Standard_GRS",
+              "Standard_ZRS",
+              "Premium_LRS"
+            ],
+            "metadata": {
+                "description": "Storage Account type"
+            }
+        },
+        "SAEnableEncryption": {
+            "type": "bool",
+            "metadata": {
+                "description": "A security enabling option. By default, Azure is not encrypting the stored data."
+            }
+        },
+        "VNName": {
+            "type": "string",
+            "metadata": {
+                "description": "A human readable name for a virtual network."
+            }
+        },
+        "NetPrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The complete network address has the following format 172.16.0.0/12"
+            }
+        },
+        "NPostfix":{
+            "type": "string",
+            "metadata": {
+                "description": "This piece of information represents the last 2 groups of a network address, see the full address example in #/parameters/NetworkPrefix/metadata/description"
+            }
+        },
+        "NBlock":{
+            "type": "string",
+            "metadata": {
+                "description": "Class B network defintion"
+            }
+        },
+        "SBlock": {
+            "type": "string",
+            "metadata": {
+                "description": "The set of available addresses per subnet."
+            }
+        },
+        "SCount": {
+            "type": "int",
+            "metadata": {
+                "description": "Each virtual network is a container of 0+ networks. This integer specifeis how many should be created inside a given Azure Virtual Network."
+            }
+        }
+    },
+    "variables": {
+        "TemplateRepositoryURL": "https://raw.githubusercontent.com/apetrovYa/interview-devops-engineer/master/assessment-1/templates/",
+        "StorageAccountTemplateName": "StorageAccountLinkedTemplate",
+        "VirtualNetworkTemplateName": "NetworkLinkedTemplate"
+        
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('StorageAccountTemplateName')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('TemplateRepositoryURL'), 'StorageAccount.template.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters":{
+                    "StorageAccountPrefixName": {
+                        "value": "[parameters('SAPrefixName')]"
+                    },
+                    "StorageAccountType": {
+                        "value": "[parameters('SAType')]"
+                    },
+                    "EnableEncryption": {
+                        "value": "[parameters('SAEnableEncryption')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[variables('VirtualNetworkTemplateName')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[variables('StorageAccountTemplateName')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('TemplateRepositoryURL'), 'VirtualNetwork.template.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters":{
+                    "VirtualNetworkName": {
+                        "value": "[parameters('VNName')]"
+                    },
+                    "NetworkPrefix": {
+                        "value": "[parameters('NetPrefix')]"
+                    },
+                    "NetworkPostfix": {
+                        "value": "[parameters('NPostfix')]"
+                    },
+                    "NetworkBlock": {
+                        "value": "[parameters('NBlock')]"
+                    },
+                    "SubnetBlock": {
+                        "value": "[parameters('SBlock')]"
+                    },
+                    "SubnetCount": {
+                        "value": "[parameters('SCount')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+         "StorageAccountInfo": {
+             "value": "[reference(variables('StorageAccountTemplateName')).outputs.AccountName.value]",
+             "type": "string"
+         },
+         "NetworkInfo": {
+             "value": "[reference(variables('VirtualNetworkTemplateName')).outputs.AzureNetworkObject.value]",
+             "type": "object"
+         }   
+    }
+}

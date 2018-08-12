@@ -1,0 +1,82 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "VirtualNetworkName": {
+            "type": "string",
+            "defaultValue": "network"
+        },
+        "NetworkPrefix": {
+            "type": "string",
+            "defaultValue":"172.16",
+            "metadata": {
+                "description": "The complete network address has the following format 172.16.0.0/12"
+            }
+        },
+        "NetworkPostfix":{
+            "type": "string",
+            "defaultValue": "0.0",
+            "metadata": {
+                "description": "This piece of information represents the last 2 groups of a network address, see the full address example in #/parameters/NetworkPrefix/metadata/description"
+            }
+        },
+        "NetworkBlock":{
+            "type": "string",
+            "defaultValue": "12",
+            "metadata": {
+                "description": "Class B network defintion"
+            }
+        },
+        "SubnetBlock": {
+            "type": "string",
+            "defaultValue": "24",
+            "metadata": {
+                "description": "The set of available addresses per subnet."
+            }
+        },
+        "SubnetCount": {
+            "type": "int",
+            "defaultValue": 3,
+            "metadata": {
+                "description": "Each virtual network is a container of 0+ networks. This integer specifeis how many should be created inside a given Azure Virtual Network."
+            }
+        }
+    },
+    "variables": {
+        "NetworkCompleteAddress": "[concat(parameters('NetworkPrefix'), '.', parameters('NetworkPostfix'), '/' , parameters('NetworkBlock'))]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-06-01",
+            "name": "[parameters('VirtualNetworkName')]",
+            "type": "Microsoft.Network/virtualNetworks",
+            "location": "[resourceGroup().location]",
+            "tags": "[resourceGroup().tags]",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[variables('NetworkCompleteAddress')]"
+                    ]
+                },
+                "copy": [
+                    {
+                        "name": "subnets",
+                        "count": "[parameters('SubnetCount')]",
+                        "input": {
+                            "name": "[concat(parameters('VirtualNetworkName'),'-',copyIndex('subnets'))]",
+                            "properties": {
+                                "addressPrefix": "[concat(parameters('NetworkPrefix'), '.', copyIndex('subnets'), '.0' , '/' , parameters('SubnetBlock'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "outputs": {
+        "AzureNetworkObject": {
+            "type": "object",
+            "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('VirtualNetworkName')))]"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+        "if": {
+          "not": {
+            "anyOf": [
+            {
+              "field": "type",
+              "like": "Microsoft.Compute/*"
+            },
+            {
+              "field": "type",
+              "like": "Microsoft.Network/*"
+            },
+            {
+              "field": "type",
+              "like": "Microsoft.Storage/*"
+            }
+            ]}
+      },
+       "then": {
+         "effect": "deny"
+       }
+}
